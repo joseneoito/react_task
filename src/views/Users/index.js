@@ -160,7 +160,7 @@ export default function Users() {
                                     </Grid>
                                     <Grid item xs={6} sm={3}>
                                         <label> Order by</label>
-                                        <Select name="order by" id="order" value={orderBy || "asc"} label="order by" onChange={(e) => setSortBy(e.target.value)}>
+                                        <Select name="order by" id="order" value={orderBy || "asc"} label="order by" onChange={(e) => setOrderBy(e.target.value)}>
                                             <MenuItem key={"desc"} value={"desc"}>
                                                 desc
                                             </MenuItem>
