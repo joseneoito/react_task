@@ -6,6 +6,7 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import ButtonAppBar from "../../components/Navbar";
 import Loading from "../../components/Loading";
+import AlertDialog from "../../components/Alert";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers, fetchPaginatedUsers,deleteUser } from "../../actions/userAction";
 import Typography from "@mui/material/Typography";
@@ -98,6 +99,8 @@ export default function Users() {
     const [tmpSearch, setTempSearch] = React.useState("");
     const [searchfield, setSearchField] = React.useState("");
     const itemsPerPage = 12;
+    const [open, setOpen] = React.useState(false);
+    const [deleteId, setDeleteId] = React.useState(null)
     React.useEffect(() => {
         setPageCount(Math.ceil(users.length / itemsPerPage));
     }, [users]);
@@ -174,7 +177,7 @@ export default function Users() {
                     </Grid>
                     <div style={{padding: '20px'}} >
                     <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-                            <Items currentItems={currentItems} navigate={(data) => navigate(data)} deleteUser={(id)=>dispatch(deleteUser(id))}/>
+                            <Items currentItems={currentItems} navigate={(data) => navigate(data)} deleteUser={(id)=> {setOpen(true); setDeleteId(id)}}/>
                             <Grid item xs={6} sm={3}>
                 {paginatedUsers?.length > 0 && <Pagination count={pageCount} page={itemOffset} onChange={handlePageClick} />}
                             </Grid>
@@ -186,6 +189,7 @@ export default function Users() {
                         </Grid>
                     </div>
                     </Box>
+                    <AlertDialog open={open} handleClose={() => setOpen(false)} title="Delete User" description="Are you sure you want to proceed?" handleProceed={()=>{setOpen(false);dispatch(deleteUser(deleteId)) }}/>
                 </>
             )}
         </>

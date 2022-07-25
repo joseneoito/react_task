@@ -6,7 +6,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-export default function AlertDialog({open, handleClose, title, description}) {
+export default function AlertDialog({open, handleClose, title, description, handleProceed = null}) {
 
   return (
     <div>
@@ -25,8 +25,12 @@ export default function AlertDialog({open, handleClose, title, description}) {
             </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Ok</Button>
+          <Button onClick={handleClose}>{handleProceed? "Cancel" :"Ok"}</Button>
         </DialogActions>
+       {handleProceed &&
+        <DialogActions>
+          <Button onClick={handleProceed}>Delete</Button>
+        </DialogActions>}
       </Dialog>
     </div>
   );
