@@ -3,9 +3,6 @@ export const FETCH_USER_BY_ID = "FETCH_USER_BY_ID"
 export const FETCH_USER_BY_ID_SUCCESS = "FETCH_USER_BY_ID_SUCCESS"
 export const FETCH_USER_BY_ID_FAILURE = "FETCH_USER_BY_ID_FAILURE"
 
-export const FETCH_USERS = "FETCH_USERS"
-export const FETCH_USERS_SUCCESS = "FETCH_USERS_SUCCESS"
-export const FETCH_USERS_FAILURE = "FETCH_USERS_FAILURE"
 
 export const CREATE_USER = "CREATE_USER"
 export const CREATE_USER_SUCCESS = "CREATE_USER_SUCCESS"
@@ -94,30 +91,17 @@ export const fetchUser = (id) => (dispatch) => {
 }
 
 
-export const fetchUsers = () => (dispatch) => {
 
-    dispatch({ type: FETCH_USERS })
-    fetch(API_URL + `/users`)
-    .then(res => res.json())
-    .then(data => {
-        console.log(data)
-        return dispatch({ type: FETCH_USERS_SUCCESS, payload: data })
-    })
-    .catch(err => {
-        return dispatch({ type: FETCH_USERS_FAILURE, payload: err })
-    })
-}
-
-export const fetchPaginatedUsers = (page=1, limit=12, sort ="id", order="asc", q="") => (dispatch) => {
-    const t = q == "" ? `/users?_page=${page}&_limit=${limit}&_sort=${sort}&_order=${order}` :`/users?_page=${page}&_limit=${limit}&_sort=${sort}&_order=${order}&${q}`
+export const fetchPaginatedUsers = (page=1, limit=12, sort ="id", order="asc", q="") => {
+    return async (dispatch) =>{
     dispatch({ type: PAGINATE_USER_START })
-    fetch(API_URL + t)
-    .then(res => res.json())
-    .then(data => {
-        console.log(data)
-        return dispatch({ type: PAGINATE_USER_SUCCESS, payload: data })
-    })
-    .catch(err => {
-        return dispatch({ type: PAGINATE_USER_FAILURE, payload: err })
-    })
-}
+    try {
+        const t = q == "" ? `/users?_page=${page}&_limit=${limit}&_sort=${sort}&_order=${order}` :`/users?_page=${page}&_limit=${limit}&_sort=${sort}&_order=${order}&${q}`
+        const res = await fetch(API_URL + t);
+        const count = res.headers.get("X-Total-Count");
+        const data = await res.json();
+        dispatch({ type: PAGINATE_USER_SUCCESS, payload: {data:data,count:count}})
+    } catch(err) {
+        dispatch({ type: PAGINATE_USER_FAILURE, payload:err })
+    }
+}}

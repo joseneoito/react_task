@@ -39,18 +39,71 @@ const profileCardImg = {
     flexDirection: "column",
     justifyContent: "space-around",
 };
-function Items({ currentItems, navigate, deleteUser}) {
+export default function Users() {
+    const dispatch = useDispatch();
+    const {  isLoading, errors, paginatedUsers, usersCount } = useSelector((store) => store?.user);
+    const navigate = useNavigate();
+    const [currentItems, setCurrentItems] = React.useState(null);
+    const [pageCount, setPageCount] = React.useState(0);
+    const [itemOffset, setItemOffset] = React.useState(0);
+    const [sortBy, setSortBy] = React.useState("createdAt");
+    const [orderBy, setOrderBy] = React.useState("desc");
+    const [searchBy, setSearchBy] = React.useState("");
+    const [tmpSearch, setTempSearch] = React.useState("");
+    const [searchfield, setSearchField] = React.useState("name");
+    const itemsPerPage = 12;
+    const [open, setOpen] = React.useState(false);
+    const [deleteId, setDeleteId] = React.useState(null)
+    React.useEffect(() => {
+        setPageCount(Math.ceil(usersCount / itemsPerPage));
+    }, [usersCount]);
+    React.useEffect(() => {
+        const endOffset = itemOffset + itemsPerPage;
+        console.log(`Loading items from ${itemOffset} to ${endOffset}`);
+        let temp = (itemOffset !== 0 && tmpSearch !=="") ? 0 : itemOffset
+        dispatch(fetchPaginatedUsers( temp, itemsPerPage, sortBy, orderBy, searchBy));
+    }, [itemOffset, itemsPerPage, sortBy, orderBy, searchBy]);
+    React.useEffect(() => {
+        setSearchBy(`${searchfield}_like=${tmpSearch}`);
+    }, [tmpSearch, searchfield]);
+    React.useEffect(() => {
+        setCurrentItems(paginatedUsers);
+    }, [paginatedUsers]);
+    // Invoke when user click to request another page.
+    const handlePageClick = (event, page) => {
+        setItemOffset(page);
+    };
+
+const Items = React.memo(({ currentItems, navigate, deleteUser}) =>{
     return (
         <>
             {currentItems?.map((_, index) => (
-                <Grid item xs={2} sm={4} md={4} key={index}>
+                <Grid item xs={2} sm={4} md={4} key={_.id.toString()}>
                     <Item data={_} onClick={(data) => navigate(`/user/${data}`)}  deleteUser={(id)=>deleteUser(id)}/>
                 </Grid>
             ))}
         </>
     );
-}
-const Item = ({ data, onClick, deleteUser }) => {
+})
+    const RenderGrid = React.memo(()=>{
+        return(
+                <>
+                    <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+                            <Items currentItems={currentItems} navigate={(data) => navigate(data)} deleteUser={(id)=> {setOpen(true); setDeleteId(id)}}/>
+                        </Grid>
+                    <Grid container spaceing = {{xs: 2, md: 3}} >
+                            <Grid item xs={6} sm={3}>
+                {paginatedUsers?.length > 0 && <Pagination count={pageCount} page={itemOffset} onChange={handlePageClick} />}
+                            </Grid>
+                            <Grid  item xs={6} sm={3}>
+                                <Button variant="contained" color="primary" onClick={() => navigate("/users/create")}>
+                                    Create user
+                                </Button>
+                            </Grid>
+                        </Grid></>
+        )
+    })
+const Item = React.memo(({ data, onClick, deleteUser }) => {
     return (
         <Paper elevation={3}>
             <div style={profileCardItem}>
@@ -84,46 +137,8 @@ const Item = ({ data, onClick, deleteUser }) => {
             </div>
         </Paper>
     );
-};
+})
 
-export default function Users() {
-    const dispatch = useDispatch();
-    const { users, isLoading, errors, paginatedUsers } = useSelector((store) => store?.user);
-    const navigate = useNavigate();
-    const [currentItems, setCurrentItems] = React.useState(null);
-    const [pageCount, setPageCount] = React.useState(0);
-    const [itemOffset, setItemOffset] = React.useState(0);
-    const [sortBy, setSortBy] = React.useState("id");
-    const [orderBy, setOrderBy] = React.useState("asc");
-    const [searchBy, setSearchBy] = React.useState("");
-    const [tmpSearch, setTempSearch] = React.useState("");
-    const [searchfield, setSearchField] = React.useState("");
-    const itemsPerPage = 12;
-    const [open, setOpen] = React.useState(false);
-    const [deleteId, setDeleteId] = React.useState(null)
-    React.useEffect(() => {
-        setPageCount(Math.ceil(users.length / itemsPerPage));
-    }, [users]);
-    React.useEffect(() => {
-        const endOffset = itemOffset + itemsPerPage;
-        console.log(`Loading items from ${itemOffset} to ${endOffset}`);
-        dispatch(fetchPaginatedUsers(itemOffset, itemsPerPage, sortBy, orderBy, searchBy));
-    }, [itemOffset, itemsPerPage, sortBy, orderBy, searchBy]);
-    React.useEffect(() => {
-        if (tmpSearch !== "") setSearchBy(`${searchfield}_like=${tmpSearch}`);
-    }, [tmpSearch, searchfield]);
-    React.useEffect(() => {
-        setCurrentItems(paginatedUsers);
-    }, [paginatedUsers]);
-    // Invoke when user click to request another page.
-    const handlePageClick = (event, page) => {
-        const newOffset = (event.selected * itemsPerPage) % users.length;
-        console.log(`User requested page number ${page}, which is offset ${newOffset}`);
-        setItemOffset(page);
-    };
-    React.useEffect(() => {
-        dispatch(fetchUsers());
-    }, []);
     return (
         <>
             <ButtonAppBar title="Users" />
@@ -132,33 +147,17 @@ export default function Users() {
             ) : (
                 <>
                     <Box sx={{ flexGrow: 1, marginTop: "30px", padding: "30px" }}>
-                    <Grid container spacing={1}>
-                            {users?.length > 0 && (
+                    <Grid container spacing={3}>
                                 <>
                                     <Grid item xs={6} sm={3}>
-                                        <label> Search by</label>
-                                        <Select name="searchfield" id="searchfield" value={searchfield || ""} label="search by" onChange={(e) => setSearchField(e.target.value)}>
-                                            {Object.keys(users[0])?.map((i) => {
-                                                return (
-                                                    <MenuItem key={i} value={i}>
-                                                        {i}
-                                                    </MenuItem>
-                                                );
-                                            })}
-                                        </Select>
-                                        <TextField required id="search" name="search" label="search by" fullWidth autoFocus onChange={(e) => setTempSearch(e.target.value)} value={tmpSearch || ""} margin="dense" />
+                                <TextField required id="search" name="search" label="Search by name" fullWidth autoFocus onChange={(e) => setTempSearch(e.target.value)} value={tmpSearch || ""} margin="dense" />
                                     </Grid>
 
                                     <Grid item xs={6} sm={6}>
                                         <label> Sort by</label>
                                         <Select name="sort by" id="sort" value={sortBy || "id"} label="sort by" onChange={(e) => setSortBy(e.target.value)}>
-                                            {Object.keys(users[0])?.map((i) => {
-                                                return (
-                                                    <MenuItem key={i} value={i}>
-                                                        {i}
-                                                    </MenuItem>
-                                                );
-                                            })}
+                                                    <MenuItem key={"Age"} value={"age"}>Age</MenuItem>
+                                                    <MenuItem key={"CreatedAt"} value={"createdAt"}>Created at</MenuItem>
                                         </Select>
                                     </Grid>
                                     <Grid item xs={6} sm={3}>
@@ -173,21 +172,8 @@ export default function Users() {
                                         </Select>
                                     </Grid>
                                 </>
-                            )}
                     </Grid>
-                    <div style={{padding: '20px'}} >
-                    <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-                            <Items currentItems={currentItems} navigate={(data) => navigate(data)} deleteUser={(id)=> {setOpen(true); setDeleteId(id)}}/>
-                            <Grid item xs={6} sm={3}>
-                {paginatedUsers?.length > 0 && <Pagination count={pageCount} page={itemOffset} onChange={handlePageClick} />}
-                            </Grid>
-                            <Grid  item xs={6} sm={3}>
-                                <Button variant="contained" color="primary" onClick={() => navigate("/users/create")}>
-                                    Create user
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </div>
+                    <div style={{padding: '20px'}} ><RenderGrid/></div>
                     </Box>
                     <AlertDialog open={open} handleClose={() => setOpen(false)} title="Delete User" description="Are you sure you want to proceed?" handleProceed={()=>{setOpen(false);dispatch(deleteUser(deleteId)) }}/>
                 </>
