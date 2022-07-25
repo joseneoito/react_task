@@ -107,7 +107,7 @@ const Item = React.memo(({ data, onClick, deleteUser }) => {
     return (
         <Paper elevation={3}>
             <div style={profileCardItem}>
-                <div style={profileCardImg}>
+                <div style={profileCardImg} onClick={()=>onClick(data.id)}>
                     <img src={data.avatarUrl} style={{ borderRadius: "50%" }} />
                     <div style={{ alignSelf: "center" }}>
                         <Typography variant="h5" component="h5">
@@ -115,7 +115,7 @@ const Item = React.memo(({ data, onClick, deleteUser }) => {
                         </Typography>
                     </div>
                 </div>
-                <div style={profileCardDesc}>
+                <div style={profileCardDesc} onClick={()=>onClick(data.id)}>
                     <Typography variant="h3" component="h3">
                         {data.name}
                     </Typography>

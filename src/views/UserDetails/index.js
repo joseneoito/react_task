@@ -28,13 +28,15 @@ const rowContainer = {
 const validate = (values) => {
     const errors = {};
 
-    if (!values.name || values.name == "") {
+    if (!values.name || values.name == "" || values.name == " ") {
         errors.name = "Required";
     }
     if (!values.statusMessage || values.statusMessage == "") {
         errors.statusMessage = "Required";
     }
-    if (!values.age || values.age <=0)
+    if (!values.age || values.age <=0) {
+        errors.age = "Required";
+    }
     if (!values.email) {
         errors.email = "Required";
     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
