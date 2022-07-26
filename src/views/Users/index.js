@@ -10,7 +10,8 @@ import AlertDialog from "../../components/Alert";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers, fetchPaginatedUsers,deleteUser, setSearchParams } from "../../actions/userAction";
 import Typography from "@mui/material/Typography";
-import GroupsIcon from "@mui/icons-material/Groups";
+import LockClockIcon from '@mui/icons-material/LockClock';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
 import IconButton from "@mui/material/IconButton";
 import { useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
@@ -128,7 +129,7 @@ const Item = React.memo(({ data }) => {
                 </div>
                 <div style={profileCardButton}>
                     <IconButton aria-label="view" size="large" onClick={()=>navigate(`/user/${data.id}`)}>
-                        <GroupsIcon fontSize="inherit" />
+                        {data.isPublic ? <LockOpenIcon /> : <LockClockIcon/>}
                     </IconButton>
                     <IconButton aria-label="view" size="large" onClick={() => {setOpen(true); setDeleteId(data.id)}}>
                         <DeleteIcon fontSize="inherit" sx={{ color: pink[500] }}/>
@@ -148,7 +149,10 @@ const Item = React.memo(({ data }) => {
                 <>
                     <Box sx={{ flexGrow: 1, marginTop: "30px", padding: "30px" }}>
                                 <div style={searchBar}>
+                                <div style={{...selectFieldStyle, alignItems: 'center' }}>
+                                <label>Name</label>
                                 <TextField required id="search" name="search" label="Search by name" fullWidth autoFocus onChange={(e) => dispatch(setSearchParams({key: "tmpSearch", value: e.target.value}))} value={tmpSearch || ""} margin="dense" />
+                                </div>
                                         <div style={selectFieldStyle}><label> Sort by</label>
                                         <Select name="sort by" id="sort" value={sortBy || "id"} label="sort by" onChange={(e) => dispatch(setSearchParams({key: "sortBy", value: e.target.value}))}>
                                                     <MenuItem key={"Age"} value={"age"}>Age</MenuItem>
