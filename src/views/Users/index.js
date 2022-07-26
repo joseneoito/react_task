@@ -37,8 +37,20 @@ const profileCardButton = {
 const profileCardImg = {
     display: "flex",
     flexDirection: "column",
-    justifyContent: "space-around",
+    //justifyContent: "space-around",
 };
+const searchBar={
+    display: 'flex',
+    flexDirection: 'row',
+    width: '20%',
+    padding: '20px'
+}
+const selectFieldStyle={
+    display: 'flex',
+    flexDirection: 'column',
+    paddingLeft: '20px',
+    alignItems: 'space-around'
+}
 export default function Users() {
     const dispatch = useDispatch();
     const {  isLoading, errors, paginatedUsers, usersCount, searchParams: { tmpSearch, orderBy, sortBy} } = useSelector((store) => store?.user);
@@ -83,16 +95,12 @@ const Items = React.memo(() =>{
                     <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                             <Items   />
                         </Grid>
-                    <Grid container spaceing = {{xs: 2, md: 3}} >
-                            <Grid item xs={6} sm={3}>
+                    <div style= {profileCardItem}>
                 {paginatedUsers?.length > 0 && <Pagination count={pageCount} page={itemOffset} onChange={handlePageClick} />}
-                            </Grid>
-                            <Grid  item xs={6} sm={3}>
                                 <Button variant="contained" color="primary" onClick={() => navigate("/users/create")}>
                                     Create user
                                 </Button>
-                            </Grid>
-                        </Grid></>
+                        </div></>
         )
     })
 const Item = React.memo(({ data }) => {
@@ -119,10 +127,10 @@ const Item = React.memo(({ data }) => {
                     </Typography>
                 </div>
                 <div style={profileCardButton}>
-                    <IconButton aria-label="view" size="small" onClick={()=>navigate(`/user/${data.id}`)}>
+                    <IconButton aria-label="view" size="large" onClick={()=>navigate(`/user/${data.id}`)}>
                         <GroupsIcon fontSize="inherit" />
                     </IconButton>
-                    <IconButton aria-label="view" size="small" onClick={() => {setOpen(true); setDeleteId(data.id)}}>
+                    <IconButton aria-label="view" size="large" onClick={() => {setOpen(true); setDeleteId(data.id)}}>
                         <DeleteIcon fontSize="inherit" />
                     </IconButton>
                 </div>
@@ -139,20 +147,14 @@ const Item = React.memo(({ data }) => {
             ) : (
                 <>
                     <Box sx={{ flexGrow: 1, marginTop: "30px", padding: "30px" }}>
-                    <Grid container spacing={3}>
-                                <>
-                                    <Grid item xs={6} sm={3}>
+                                <div style={searchBar}>
                                 <TextField required id="search" name="search" label="Search by name" fullWidth autoFocus onChange={(e) => dispatch(setSearchParams({key: "tmpSearch", value: e.target.value}))} value={tmpSearch || ""} margin="dense" />
-                                    </Grid>
-
-                                    <Grid item xs={6} sm={6}>
-                                        <label> Sort by</label>
+                                        <div style={selectFieldStyle}><label> Sort by</label>
                                         <Select name="sort by" id="sort" value={sortBy || "id"} label="sort by" onChange={(e) => dispatch(setSearchParams({key: "sortBy", value: e.target.value}))}>
                                                     <MenuItem key={"Age"} value={"age"}>Age</MenuItem>
                                                     <MenuItem key={"CreatedAt"} value={"createdAt"}>Created at</MenuItem>
-                                        </Select>
-                                    </Grid>
-                                    <Grid item xs={6} sm={3}>
+                                        </Select></div>
+                                        <div style={selectFieldStyle}>
                                         <label> Order by</label>
                                         <Select name="order by" id="order" value={orderBy || "asc"} label="order by" onChange={(e) => dispatch(setSearchParams({key: "orderBy", value: e.target.value}))}>
                                             <MenuItem key={"desc"} value={"desc"}>
@@ -162,9 +164,8 @@ const Item = React.memo(({ data }) => {
                                                 asc
                                             </MenuItem>
                                         </Select>
-                                    </Grid>
-                                </>
-                    </Grid>
+                                        </div>
+                                </div>
                     <div style={{padding: '20px'}} ><RenderGrid/></div>
                     </Box>
                     <AlertDialog open={open} handleClose={() => setOpen(false)} title="Delete User" description="Are you sure you want to proceed?" handleProceed={()=>{setOpen(false);dispatch(deleteUser(deleteId)) }}/>

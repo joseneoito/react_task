@@ -134,6 +134,11 @@ export default function UserDetails() {
             navigate(-1);
         }
     }, [open]);
+    const topRow={
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    }
     return (
         <>
             <ButtonAppBar title="User Details" />
@@ -147,10 +152,13 @@ export default function UserDetails() {
                                 <Typography variant="h6" align="center" margin="dense">
                                     User Details
                                 </Typography>
+
+                                    <div style={topRow}>
+                                        <img src= {formik.values.avatarUrl}/>
+                                        {id && <Typography>{ `Created At: ${formik.values.createdAt}`}</Typography>}
+                                    </div>
                                 <Grid container spacing={1}>
 
-                                    <Grid item xs={12} sm={6}><img src= {formik.values.avatarUrl}/></Grid>
-                {id && <Grid item xs={12} sm={6}>{ `Created At: ${formik.values.createdAt}`}<Typography></Typography></Grid>}
                                     <Grid item xs={12} sm={12}>
                                         <TextField required id="name" name="name" label="Name" onChange={formik.handleChange} value={formik.values.name || ""} fullWidth margin="dense" error={formik.errors.name ? true : false} />
                                         <Typography variant="inherit" color="textSecondary">
