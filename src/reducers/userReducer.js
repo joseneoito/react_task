@@ -1,5 +1,5 @@
 import { FETCH_USER_BY_ID, FETCH_USER_BY_ID_SUCCESS, FETCH_USER_BY_ID_FAILURE,  CREATE_USER
-, CREATE_USER_SUCCESS, CREATE_USER_FAILURE, UPDATE_USER_START, UPDATE_USER_SUCCESS, UPDATE_USER_FAILURE, PAGINATE_USER_START, PAGINATE_USER_SUCCESS, PAGINATE_USER_FAILURE, DELETE_USER_START, DELETE_USER_SUCCESS, DELETE_USER_FAILURE} from '../actions/userAction';
+, CREATE_USER_SUCCESS, CREATE_USER_FAILURE, UPDATE_USER_START, UPDATE_USER_SUCCESS, UPDATE_USER_FAILURE, PAGINATE_USER_START, PAGINATE_USER_SUCCESS, PAGINATE_USER_FAILURE, DELETE_USER_START, DELETE_USER_SUCCESS, DELETE_USER_FAILURE, SET_USER_SEARCH_PARAMS} from '../actions/userAction';
 
 const initialState = {
     usersCount: 0,
@@ -7,7 +7,12 @@ const initialState = {
     isLoading: false,
     errors: "",
     user:{},
-    userLoading: false
+    userLoading: false,
+    searchParams: {
+        tmpSearch: "",
+        orderBy: "desc",
+        sortBy: "createdAt"
+    }
 }
 
 function userReducer(state = initialState, action) {
@@ -42,6 +47,8 @@ function userReducer(state = initialState, action) {
             return { ...state, isLoading: false, paginatedUsers: state.paginatedUsers?.filter(item=> item.id !== action.payload) }
         case DELETE_USER_FAILURE:
             return { ...state, isLoading: false, errors: action.payload }
+        case SET_USER_SEARCH_PARAMS:
+            return { ...state, searchParams: {...state.searchParams, [action.payload['key']]: action.payload['value']} }
         default:
             return state;
     }
