@@ -66,12 +66,12 @@ export default function Users() {
         setItemOffset(page);
     };
 
-const Items = React.memo(({ currentItems, navigate, deleteUser}) =>{
+const Items = React.memo(() =>{
     return (
         <>
             {currentItems?.map((_, index) => (
                 <Grid item xs={2} sm={4} md={4} key={_.id.toString()}>
-                    <Item data={_} onClick={(data) => navigate(`/user/${data}`)}  deleteUser={(id)=>deleteUser(id)}/>
+                    <Item data={_} />
                 </Grid>
             ))}
         </>
@@ -81,7 +81,7 @@ const Items = React.memo(({ currentItems, navigate, deleteUser}) =>{
         return(
                 <>
                     <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-                            <Items currentItems={currentItems} navigate={(data) => navigate(data)} deleteUser={(id)=> {setOpen(true); setDeleteId(id)}}/>
+                            <Items   />
                         </Grid>
                     <Grid container spaceing = {{xs: 2, md: 3}} >
                             <Grid item xs={6} sm={3}>
@@ -95,11 +95,11 @@ const Items = React.memo(({ currentItems, navigate, deleteUser}) =>{
                         </Grid></>
         )
     })
-const Item = React.memo(({ data, onClick, deleteUser }) => {
+const Item = React.memo(({ data }) => {
     return (
         <Paper elevation={3}>
             <div style={profileCardItem}>
-                <div style={profileCardImg} onClick={()=>onClick(data.id)}>
+                <div style={profileCardImg} onClick={()=>navigate(`/user/${data.id}`)}>
                     <img src={data.avatarUrl} style={{ borderRadius: "50%" }} />
                     <div style={{ alignSelf: "center" }}>
                         <Typography variant="h5" component="h5">
@@ -107,7 +107,7 @@ const Item = React.memo(({ data, onClick, deleteUser }) => {
                         </Typography>
                     </div>
                 </div>
-                <div style={profileCardDesc} onClick={()=>onClick(data.id)}>
+                <div style={profileCardDesc} onClick={()=>navigate(`/user/${data.id}`)}>
                     <Typography variant="h3" component="h3">
                         {data.name}
                     </Typography>
@@ -119,10 +119,10 @@ const Item = React.memo(({ data, onClick, deleteUser }) => {
                     </Typography>
                 </div>
                 <div style={profileCardButton}>
-                    <IconButton aria-label="view" size="small" onClick={() => onClick(data.id)}>
+                    <IconButton aria-label="view" size="small" onClick={()=>navigate(`/user/${data.id}`)}>
                         <GroupsIcon fontSize="inherit" />
                     </IconButton>
-                    <IconButton aria-label="view" size="small" onClick={() => deleteUser(data.id)}>
+                    <IconButton aria-label="view" size="small" onClick={() => {setOpen(true); setDeleteId(data.id)}}>
                         <DeleteIcon fontSize="inherit" />
                     </IconButton>
                 </div>
