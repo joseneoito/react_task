@@ -11,7 +11,8 @@ const initialState = {
     searchParams: {
         tmpSearch: "",
         orderBy: "desc",
-        sortBy: "createdAt"
+        sortBy: "createdAt",
+        itemOffset: 0
     }
 }
 
