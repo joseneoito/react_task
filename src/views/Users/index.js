@@ -19,6 +19,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { TextField } from "@mui/material";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import { pink } from '@mui/material/colors';
 const profileCardItem = {
     display: "flex",
     flexDirection: "row",
@@ -130,7 +131,7 @@ const Item = React.memo(({ data }) => {
                         <GroupsIcon fontSize="inherit" />
                     </IconButton>
                     <IconButton aria-label="view" size="large" onClick={() => {setOpen(true); setDeleteId(data.id)}}>
-                        <DeleteIcon fontSize="inherit" />
+                        <DeleteIcon fontSize="inherit" sx={{ color: pink[500] }}/>
                     </IconButton>
                 </div>
             </div>
