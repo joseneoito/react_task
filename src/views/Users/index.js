@@ -53,11 +53,10 @@ const selectFieldStyle={
 }
 export default function Users() {
     const dispatch = useDispatch();
-    const {  isLoading, errors, paginatedUsers, usersCount, searchParams: { tmpSearch, orderBy, sortBy} } = useSelector((store) => store?.user);
+    const {  isLoading, errors, paginatedUsers, usersCount, searchParams: { tmpSearch, orderBy, sortBy, itemOffset} } = useSelector((store) => store?.user);
     const navigate = useNavigate();
     const [currentItems, setCurrentItems] = React.useState(null);
     const [pageCount, setPageCount] = React.useState(0);
-    const [itemOffset, setItemOffset] = React.useState(0);
     const itemsPerPage = 12;
     const [open, setOpen] = React.useState(false);
     const [deleteId, setDeleteId] = React.useState(null)
@@ -75,7 +74,7 @@ export default function Users() {
     }, [paginatedUsers]);
     // Invoke when user click to request another page.
     const handlePageClick = (event, page) => {
-        setItemOffset(page);
+        dispatch(setSearchParams({key: "itemOffset", value: page}))
     };
 
 const Items = React.memo(() =>{
