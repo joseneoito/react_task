@@ -21,8 +21,12 @@ export const PAGINATE_USER_START = "PAGINATE_USER_START"
 export const PAGINATE_USER_FAILURE = "PAGINATE_USER_FAILURE"
 export const PAGINATE_USER_SUCCESS = "PAGINATE_USER_SUCCESS"
 
+export const SET_USER_SEARCH_PARAMS = "SET_USER_SEARCH_PARAMS"
 const API_URL = "http://localhost:3333"
 
+export const setSearchParams = (data)=>(dispatch)=>{
+    dispatch({ type: SET_USER_SEARCH_PARAMS , payload: data})
+}
 export const deleteUser = (id) => (dispatch) => {
     dispatch({ type: DELETE_USER_START })
     fetch(API_URL + `/users/${id}`, { method: 'DELETE' })

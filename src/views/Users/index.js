@@ -8,7 +8,7 @@ import ButtonAppBar from "../../components/Navbar";
 import Loading from "../../components/Loading";
 import AlertDialog from "../../components/Alert";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers, fetchPaginatedUsers,deleteUser } from "../../actions/userAction";
+import { fetchUsers, fetchPaginatedUsers,deleteUser, setSearchParams } from "../../actions/userAction";
 import Typography from "@mui/material/Typography";
 import GroupsIcon from "@mui/icons-material/Groups";
 import IconButton from "@mui/material/IconButton";
@@ -41,16 +41,11 @@ const profileCardImg = {
 };
 export default function Users() {
     const dispatch = useDispatch();
-    const {  isLoading, errors, paginatedUsers, usersCount } = useSelector((store) => store?.user);
+    const {  isLoading, errors, paginatedUsers, usersCount, searchParams: { tmpSearch, orderBy, sortBy} } = useSelector((store) => store?.user);
     const navigate = useNavigate();
     const [currentItems, setCurrentItems] = React.useState(null);
     const [pageCount, setPageCount] = React.useState(0);
     const [itemOffset, setItemOffset] = React.useState(0);
-    const [sortBy, setSortBy] = React.useState("createdAt");
-    const [orderBy, setOrderBy] = React.useState("desc");
-    const [searchBy, setSearchBy] = React.useState("");
-    const [tmpSearch, setTempSearch] = React.useState("");
-    const [searchfield, setSearchField] = React.useState("name");
     const itemsPerPage = 12;
     const [open, setOpen] = React.useState(false);
     const [deleteId, setDeleteId] = React.useState(null)
@@ -61,11 +56,8 @@ export default function Users() {
         const endOffset = itemOffset + itemsPerPage;
         console.log(`Loading items from ${itemOffset} to ${endOffset}`);
         let temp = (itemOffset !== 0 && tmpSearch !=="") ? 0 : itemOffset
-        dispatch(fetchPaginatedUsers( temp, itemsPerPage, sortBy, orderBy, searchBy));
-    }, [itemOffset, itemsPerPage, sortBy, orderBy, searchBy]);
-    React.useEffect(() => {
-        setSearchBy(`${searchfield}_like=${tmpSearch}`);
-    }, [tmpSearch, searchfield]);
+        dispatch(fetchPaginatedUsers( temp, itemsPerPage, sortBy, orderBy, `name_like=${tmpSearch}`));
+    }, [itemOffset, itemsPerPage, sortBy, orderBy, tmpSearch]);
     React.useEffect(() => {
         setCurrentItems(paginatedUsers);
     }, [paginatedUsers]);
@@ -150,19 +142,19 @@ const Item = React.memo(({ data, onClick, deleteUser }) => {
                     <Grid container spacing={3}>
                                 <>
                                     <Grid item xs={6} sm={3}>
-                                <TextField required id="search" name="search" label="Search by name" fullWidth autoFocus onChange={(e) => setTempSearch(e.target.value)} value={tmpSearch || ""} margin="dense" />
+                                <TextField required id="search" name="search" label="Search by name" fullWidth autoFocus onChange={(e) => dispatch(setSearchParams({key: "tmpSearch", value: e.target.value}))} value={tmpSearch || ""} margin="dense" />
                                     </Grid>
 
                                     <Grid item xs={6} sm={6}>
                                         <label> Sort by</label>
-                                        <Select name="sort by" id="sort" value={sortBy || "id"} label="sort by" onChange={(e) => setSortBy(e.target.value)}>
+                                        <Select name="sort by" id="sort" value={sortBy || "id"} label="sort by" onChange={(e) => dispatch(setSearchParams({key: "sortBy", value: e.target.value}))}>
                                                     <MenuItem key={"Age"} value={"age"}>Age</MenuItem>
                                                     <MenuItem key={"CreatedAt"} value={"createdAt"}>Created at</MenuItem>
                                         </Select>
                                     </Grid>
                                     <Grid item xs={6} sm={3}>
                                         <label> Order by</label>
-                                        <Select name="order by" id="order" value={orderBy || "asc"} label="order by" onChange={(e) => setOrderBy(e.target.value)}>
+                                        <Select name="order by" id="order" value={orderBy || "asc"} label="order by" onChange={(e) => dispatch(setSearchParams({key: "orderBy", value: e.target.value}))}>
                                             <MenuItem key={"desc"} value={"desc"}>
                                                 desc
                                             </MenuItem>
