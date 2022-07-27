@@ -5,10 +5,11 @@ import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import ButtonAppBar from "../../components/Navbar";
+import ButtonComponent from '../../components/Button'
 import Loading from "../../components/Loading";
 import AlertDialog from "../../components/Alert";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers, fetchPaginatedUsers,deleteUser, setSearchParams } from "../../actions/userAction";
+import { fetchUsers, fetchPaginatedUsers,deleteUser, setSearchParams } from "../../store/actions/userAction";
 import Typography from "@mui/material/Typography";
 import LockClockIcon from '@mui/icons-material/LockClock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
@@ -18,9 +19,11 @@ import ReactPaginate from "react-paginate";
 import Pagination from "@mui/material/Pagination";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { TextField } from "@mui/material";
+import SelectComponent from '../../components/Select'
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { pink } from '@mui/material/colors';
+import AvatarComponent from '../../components/Avatar'
 const profileCardItem = {
     display: "flex",
     flexDirection: "row",
@@ -45,7 +48,7 @@ const searchBar={
     display: 'flex',
     flexDirection: 'row',
     width: '20%',
-    padding: '20px'
+    //padding: '20px'
 }
 const selectFieldStyle={
     display: 'flex',
@@ -98,9 +101,10 @@ const Items = React.memo(() =>{
                         </Grid>
                     <div style= {profileCardItem}>
                 {paginatedUsers?.length > 0 && <Pagination count={pageCount} page={itemOffset} onChange={handlePageClick} />}
-                                <Button variant="contained" color="primary" onClick={() => navigate("/users/create")}>
+                                <ButtonComponent text="Create user" onClick={() => navigate("/users/create")}/>
+            {/**<Button variant="contained" color="primary" onClick={() => navigate("/users/create")}>
                                     Create user
-                                </Button>
+                                </Button>**/}
                         </div></>
         )
     })
@@ -109,7 +113,7 @@ const Item = React.memo(({ data }) => {
         <Paper elevation={3}>
             <div style={profileCardItem}>
                 <div style={profileCardImg} onClick={()=>navigate(`/user/${data.id}`)}>
-                    <img src={data.avatarUrl} style={{ borderRadius: "50%" }} />
+                    <AvatarComponent src={data.avatarUrl} />
                     <div style={{ alignSelf: "center" }}>
                         <Typography variant="h5" component="h5">
                             {data.age}
@@ -142,32 +146,23 @@ const Item = React.memo(({ data }) => {
 
     return (
         <>
-            <ButtonAppBar title="Users" />
             {isLoading ? (
                 <Loading />
             ) : (
                 <>
                     <Box sx={{ flexGrow: 1, marginTop: "30px", padding: "30px" }}>
                                 <div style={searchBar}>
-                                <div style={{...selectFieldStyle, alignItems: 'center' }}>
+                                <div style={selectFieldStyle}>
                                 <label>Name</label>
-                                <TextField required id="search" name="search" label="Search by name" fullWidth autoFocus onChange={(e) => dispatch(setSearchParams({key: "tmpSearch", value: e.target.value}))} value={tmpSearch || ""} margin="dense" />
+                                <TextField required id="search" name="search" label="Search by name" fullWidth autoFocus onChange={(e) => dispatch(setSearchParams({key: "tmpSearch", value: e.target.value}))} value={tmpSearch || ""} margin="dense" sx={{ minWidth: 260, marginTop: '-1px' }}/>
                                 </div>
                                         <div style={selectFieldStyle}><label> Sort by</label>
-                                        <Select name="sort by" id="sort" value={sortBy || "id"} label="sort by" onChange={(e) => dispatch(setSearchParams({key: "sortBy", value: e.target.value}))}>
-                                                    <MenuItem key={"Age"} value={"age"}>Age</MenuItem>
-                                                    <MenuItem key={"CreatedAt"} value={"createdAt"}>Created at</MenuItem>
-                                        </Select></div>
+                                        <SelectComponent id ="sort" name="sort by" value={sortBy || "createdAt"} options={[{key: "Age", value: "age"}, {key: "Created at", value: "createdAt"}]}
+                                        onChange={(e) => dispatch(setSearchParams({key: "sortBy", value: e.target.value}))} />
+                                        </div>
                                         <div style={selectFieldStyle}>
                                         <label> Order by</label>
-                                        <Select name="order by" id="order" value={orderBy || "asc"} label="order by" onChange={(e) => dispatch(setSearchParams({key: "orderBy", value: e.target.value}))}>
-                                            <MenuItem key={"desc"} value={"desc"}>
-                                                desc
-                                            </MenuItem>
-                                            <MenuItem key={"asc"} value={"asc"}>
-                                                asc
-                                            </MenuItem>
-                                        </Select>
+                                        <SelectComponent name="order by" id="order" value={orderBy || "desc"} label="order by" options={[{key:"desc", value: "desc"},{key: "asc", value: "asc"}]}  onChange={(e) => dispatch(setSearchParams({key: "orderBy", value: e.target.value}))} />
                                         </div>
                                 </div>
                     <div style={{padding: '20px'}} ><RenderGrid/></div>
