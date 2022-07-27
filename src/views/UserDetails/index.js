@@ -3,15 +3,18 @@ import ButtonAppBar from "../../components/Navbar";
 import { useFormik } from "formik";
 import Loading from "../../components/Loading";
 import AlertDialog from "../../components/Alert";
+import AvatarComponent from "../../components/Avatar"
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUser, updateUser, createUser } from "../../actions/userAction";
+import { fetchUser, updateUser, createUser } from "../../store/actions/userAction";
 import { useParams } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { useNavigate } from "react-router-dom";
-import { Grid, TextField, Typography, Button } from "@mui/material";
+import { Grid, TextField, Typography} from "@mui/material";
+import  ButtonComponent   from '../../components/Button'
+
 const container = {
     display: "flex",
     padding: "40px",
@@ -28,10 +31,10 @@ const rowContainer = {
 const validate = (values) => {
     const errors = {};
 
-    if (!values.name || values.name == "" || values.name == " ") {
+    if (!values.name.trim()) {
         errors.name = "Required";
     }
-    if (!values.statusMessage || values.statusMessage == "") {
+    if (!values.statusMessage.trim()) {
         errors.statusMessage = "Required";
     }
     if (!values.age || values.age <=0) {
@@ -87,7 +90,7 @@ export default function UserDetails() {
         initialValues: getInitialValues(),
         enableReinitialize: true,
         onSubmit: (values) => {
-            setOpen(true);
+            //setOpen(true);
             if (id) {
                 dispatch(updateUser(values));
             } else {
@@ -141,7 +144,6 @@ export default function UserDetails() {
     }
     return (
         <>
-            <ButtonAppBar title="User Details" />
             {userLoading ? (
                 <Loading />
             ) : (
@@ -154,7 +156,7 @@ export default function UserDetails() {
                                 </Typography>
 
                                     <div style={topRow}>
-                                        <img src= {formik.values.avatarUrl}/>
+                                        <AvatarComponent src= {formik.values.avatarUrl}/>
                                         {id && <Typography>{ `Created At: ${formik.values.createdAt}`}</Typography>}
                                     </div>
                                 <Grid container spacing={1}>
@@ -198,9 +200,7 @@ export default function UserDetails() {
                                     </Grid>
                                 </Grid>
                                 <Box mt={3}>
-                                    <Button variant="contained" color="primary" type="submit">
-                                        Save
-                                    </Button>
+                                    <ButtonComponent text="Save"/>
                                 </Box>
                             </Box>
                         </Paper>

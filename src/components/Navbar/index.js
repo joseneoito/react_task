@@ -7,16 +7,27 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
-export default function ButtonAppBar({title}) {
+export default function ButtonAppBar() {
 
     const navigate = useNavigate();
+    const {pathname} = useLocation()
+    console.log("Location", pathname)
     const goBack =()=>{
-         if(title == "Home"){
+         if(pathname == "/users"){
              return null
          }else{
              return navigate(-1)
+        }
+    }
+    const getTitle =()=>{
+        if(pathname === "/users"){
+            return "Users"
+        }else if(pathname === "/users/create"){
+            return "Create"
+        }else{
+            return "User details"
         }
     }
   return (
@@ -31,10 +42,10 @@ export default function ButtonAppBar({title}) {
             sx={{ mr: 2 }}
             onClick={()=>goBack()}
           >
-      { title == "Home" ? <MenuIcon /> : <ArrowBackIcon/>}
+      { pathname == "/users" ? <MenuIcon /> : <ArrowBackIcon/>}
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            {title}
+            {getTitle()}
           </Typography>
         </Toolbar>
       </AppBar>

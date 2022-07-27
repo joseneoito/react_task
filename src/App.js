@@ -5,20 +5,24 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
+    Navigate,
     Link
 } from "react-router-dom";
 import Users from './views/Users'
 import UserDetails from './views/UserDetails'
-import Home from './views/Home'
+import ButtonAppBar from "./components/Navbar";
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route exact path="/users" element={<Users/>}/>
-      <Route exact path="/user/:id" element={<UserDetails/>}/>
-      <Route exact path="/users/create" element={<UserDetails/>}/>
-    </Routes>
-  );
+    <>
+        <ButtonAppBar />
+        <Routes>
+          <Route path="/" element={<Navigate replace to="/users" />} />
+          <Route exact path="/users" element={<Users/>}/>
+          <Route exact path="/user/:id" element={<UserDetails/>}/>
+          <Route exact path="/users/create" element={<UserDetails/>}/>
+        </Routes>
+    </>
+      );
 }
 
 export default App;
