@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Suspense} from 'react'
 import logo from './logo.svg';
 import './App.css';
 import {
@@ -8,12 +8,14 @@ import {
     Navigate,
     Link
 } from "react-router-dom";
-import Users from './views/Users'
-import UserDetails from './views/UserDetails'
-import ButtonAppBar from "./components/Navbar";
+const Users = React.lazy(() => import('./views/Users'));
+const UserDetails = React.lazy(() => import('./views/UserDetails'))
+const ButtonAppBar =React.lazy(()=> import("./components/Navbar"))
+const Loading = React.lazy(()=> import('./components/Loading'))
 function App() {
   return (
     <>
+        <Suspense fallback={<Loading />}>
         <ButtonAppBar />
         <Routes>
           <Route path="/" element={<Navigate replace to="/users" />} />
@@ -21,6 +23,7 @@ function App() {
           <Route exact path="/user/:id" element={<UserDetails/>}/>
           <Route exact path="/users/create" element={<UserDetails/>}/>
         </Routes>
+        </Suspense>
     </>
       );
 }
