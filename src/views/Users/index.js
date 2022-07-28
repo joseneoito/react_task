@@ -27,8 +27,8 @@ import AvatarComponent from '../../components/Avatar'
 const profileCardItem = {
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-around",
-    padding: '10px'
+    justifyContent: "space-evenly",
+    padding: '8px'
 };
 
 const profileCardDesc = {
@@ -99,18 +99,15 @@ const Items = React.memo(() =>{
                     <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                             <Items   />
                         </Grid>
-                    <div style= {profileCardItem}>
-                {paginatedUsers?.length > 0 && <Pagination count={pageCount} page={itemOffset} onChange={handlePageClick} />}
+                    <div style= {{...profileCardItem, justifyContent: 'flex-end', paddingTop: '20px'}}>
+                {paginatedUsers?.length > 0 && <Pagination count={pageCount} page={itemOffset} onChange={handlePageClick} size='large'/>}
                                 <ButtonComponent text="Create user" onClick={() => navigate("/users/create")}/>
-            {/**<Button variant="contained" color="primary" onClick={() => navigate("/users/create")}>
-                                    Create user
-                                </Button>**/}
                         </div></>
         )
     })
 const Item = React.memo(({ data }) => {
     return (
-        <Paper elevation={3}>
+        <Paper varient="outlined" square>
             <div style={profileCardItem}>
                 <div style={profileCardImg} onClick={()=>navigate(`/user/${data.id}`)}>
                     <AvatarComponent src={data.avatarUrl} />
@@ -154,7 +151,7 @@ const Item = React.memo(({ data }) => {
                                 <div style={searchBar}>
                                 <div style={selectFieldStyle}>
                                 <label>Name</label>
-                                <TextField required id="search" name="search" label="Search by name" fullWidth autoFocus onChange={(e) => dispatch(setSearchParams({key: "tmpSearch", value: e.target.value}))} value={tmpSearch || ""} margin="dense" sx={{ minWidth: 260, marginTop: '-1px' }}/>
+                                <TextField required id="search" name="search"  fullWidth autoFocus onChange={(e) => dispatch(setSearchParams({key: "tmpSearch", value: e.target.value}))} value={tmpSearch || ""} margin="dense" sx={{ minWidth: 260, marginTop: '-1px' }}/>
                                 </div>
                                         <div style={selectFieldStyle}><label> Sort by</label>
                                         <SelectComponent id ="sort" name="sort by" value={sortBy || "createdAt"} options={[{key: "Age", value: "age"}, {key: "Created at", value: "createdAt"}]}
