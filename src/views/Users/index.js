@@ -142,7 +142,7 @@ const Item = React.memo(({ data }) => {
 })
 
     return (
-        <>
+        <div data-testid="users">
             {isLoading ? (
                 <Loading />
             ) : (
@@ -167,6 +167,6 @@ const Item = React.memo(({ data }) => {
                     <AlertDialog open={open} handleClose={() => setOpen(false)} title="Delete User" description="Are you sure you want to proceed?" handleProceed={()=>{setOpen(false);dispatch(deleteUser(deleteId)) }}/>
                 </>
             )}
-        </>
+        </div>
     );
 }

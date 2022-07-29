@@ -143,7 +143,7 @@ export default function UserDetails() {
         justifyContent: 'space-between'
     }
     return (
-        <>
+        <div data-testid="userDetails">
             {userLoading ? (
                 <Loading />
             ) : (
@@ -208,6 +208,6 @@ export default function UserDetails() {
                     </form>
                 </div>
             )}
-        </>
+        </div>
     );
 }

@@ -8,7 +8,7 @@ export default function ButtonComponent({text, onClick=null}){
             return null
         }
     }
-    return(<Button variant="contained" color="primary" type="submit" onClick={()=> onClickButton()}>
+    return(<Button variant="contained" color="primary" type="submit" onClick={()=> onClickButton()} data-testid='button' >
                 {text}
             </Button>)
 }
