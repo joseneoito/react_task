@@ -3,7 +3,7 @@ import ButtonAppBar from "../../components/Navbar";
 import { useFormik } from "formik";
 import Loading from "../../components/Loading";
 import AlertDialog from "../../components/Alert";
-import AvatarComponent from "../../components/Avatar"
+import AvatarComponent from "../../components/Avatar";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUser, updateUser, createUser } from "../../store/actions/userAction";
 import { useParams } from "react-router-dom";
@@ -12,8 +12,8 @@ import Paper from "@mui/material/Paper";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { useNavigate } from "react-router-dom";
-import { Grid, TextField, Typography} from "@mui/material";
-import  ButtonComponent   from '../../components/Button'
+import { Grid, TextField, Typography } from "@mui/material";
+import ButtonComponent from "../../components/Button";
 
 const container = {
     display: "flex",
@@ -37,7 +37,7 @@ const validate = (values) => {
     if (!values.statusMessage.trim()) {
         errors.statusMessage = "Required";
     }
-    if (!values.age || values.age <=0) {
+    if (!values.age || values.age <= 0) {
         errors.age = "Required";
     }
     if (!values.email) {
@@ -137,11 +137,11 @@ export default function UserDetails() {
             navigate(-1);
         }
     }, [open]);
-    const topRow={
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-    }
+    const topRow = {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+    };
     return (
         <div data-testid="userDetails">
             {userLoading ? (
@@ -155,12 +155,11 @@ export default function UserDetails() {
                                     User Details
                                 </Typography>
 
-                                    <div style={topRow}>
-                                        <AvatarComponent src= {formik.values.avatarUrl}/>
-                                        {id && <Typography>{ `Created At: ${formik.values.createdAt}`}</Typography>}
-                                    </div>
+                                <div style={topRow}>
+                                    <AvatarComponent src={formik.values.avatarUrl} />
+                                    {id && <Typography>{`Created At: ${formik.values.createdAt}`}</Typography>}
+                                </div>
                                 <Grid container spacing={1}>
-
                                     <Grid item xs={12} sm={12}>
                                         <TextField required id="name" name="name" label="Name" onChange={formik.handleChange} value={formik.values.name || ""} fullWidth margin="dense" error={formik.errors.name ? true : false} />
                                         <Typography variant="inherit" color="textSecondary">
@@ -200,7 +199,7 @@ export default function UserDetails() {
                                     </Grid>
                                 </Grid>
                                 <Box mt={3}>
-                                    <ButtonComponent text="Save"/>
+                                    <ButtonComponent text="Save" />
                                 </Box>
                             </Box>
                         </Paper>

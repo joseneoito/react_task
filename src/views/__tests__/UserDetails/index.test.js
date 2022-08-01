@@ -146,29 +146,29 @@ describe('user details', () => {
 });
 
 function clickSubmitButton() {
-  user.click(screen.getByRole('button', { name: /save/i }));
+  user.click(screen.queryByRole('button', { name: /save/i }));
 }
 function getStatusMessage() {
-  return screen.getByRole('textbox', { name: /statusMessage/i });
+  return screen.queryByRole('textbox', { name: /statusMessage/i });
 }
 
 function getName() {
-  return screen.getByRole('textbox', { name: /name/i });
+  return screen.queryByRole('textbox', { name: /name/i });
 }
 
 function getAge() {
-  return screen.getByRole('textbox', { name: /age/i });
+  return screen.queryByRole('textbox', { name: /age/i });
 }
 
 function getPublic() {
-  return screen.getByRole('combobox', { name: /isPublic/i });
+  return screen.queryByRole('combobox', { name: /isPublic/i });
 }
 
 function selectPublic(data) {
   const dropdown = getPublic();
   user.selectOptions(
     dropdown,
-    within(dropdown).getByRole('option', { name: getPublic })
+    within(dropdown).queryByRole('option', { name: getPublic })
   );
 }
 
