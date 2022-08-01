@@ -24,13 +24,13 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { pink } from "@mui/material/colors";
 import AvatarComponent from "../../components/Avatar";
+import _, { debounce } from "lodash";
 const profileCardItem = {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     padding: "8px",
 };
-
 const profileCardDesc = {
     display: "flex",
     flexDirection: "column",
@@ -56,7 +56,9 @@ const selectFieldStyle = {
     paddingLeft: "20px",
     alignItems: "space-around",
 };
+
 export default function Users() {
+
     const dispatch = useDispatch();
     const {
         isLoading,
@@ -65,24 +67,49 @@ export default function Users() {
         usersCount,
         searchParams: { tmpSearch, orderBy, sortBy, itemOffset },
     } = useSelector((store) => store?.user);
+
     const navigate = useNavigate();
     const [currentItems, setCurrentItems] = React.useState(null);
     const [pageCount, setPageCount] = React.useState(0);
     const itemsPerPage = 12;
     const [open, setOpen] = React.useState(false);
     const [deleteId, setDeleteId] = React.useState(null);
+    const [search, setSearch] = React.useState("");
+
     React.useEffect(() => {
         setPageCount(Math.ceil(usersCount / itemsPerPage));
     }, [usersCount]);
+
+    React.useEffect(() => {
+        if (tmpSearch) setSearch(tmpSearch);
+    }, []);
+
     React.useEffect(() => {
         const endOffset = itemOffset + itemsPerPage;
         console.log(`Loading items from ${itemOffset} to ${endOffset}`);
         let temp = itemOffset !== 0 && tmpSearch !== "" ? 0 : itemOffset;
         dispatch(fetchPaginatedUsers(temp, itemsPerPage, sortBy, orderBy, `name_like=${tmpSearch}`));
     }, [itemOffset, itemsPerPage, sortBy, orderBy, tmpSearch]);
+
     React.useEffect(() => {
         setCurrentItems(paginatedUsers);
     }, [paginatedUsers]);
+
+    const handleSearchChange = () => {
+        console.log("trigger", search);
+        dispatch(setSearchParams({ key: "tmpSearch", value: search }));
+    };
+
+    const delayedQuery = React.useCallback(debounce(handleSearchChange, 500), [search]);
+
+    React.useEffect(() => {
+        delayedQuery();
+        return () => {
+            console.log("trigger cleanup");
+            delayedQuery.cancel();
+        };
+    }, [delayedQuery, search]);
+
     // Invoke when user click to request another page.
     const handlePageClick = (event, page) => {
         dispatch(setSearchParams({ key: "itemOffset", value: page }));
@@ -99,6 +126,7 @@ export default function Users() {
             </>
         );
     });
+
     const RenderGrid = React.memo(() => {
         return (
             <>
@@ -112,6 +140,7 @@ export default function Users() {
             </>
         );
     });
+
     const Item = React.memo(({ data }) => {
         return (
             <Paper varient="outlined" square elevation={3}>
@@ -165,7 +194,7 @@ export default function Users() {
                         <div style={searchBar}>
                             <div style={selectFieldStyle}>
                                 <label>Name</label>
-                                <TextField required id="search" name="search" fullWidth autoFocus onChange={(e) => dispatch(setSearchParams({ key: "tmpSearch", value: e.target.value }))} value={tmpSearch || ""} margin="dense" sx={{ minWidth: 260, marginTop: "-1px" }} />
+                                <TextField required id="search" name="search" fullWidth autoFocus onChange={(e) => setSearch(e.target.value)} value={search || ""} margin="dense" sx={{ minWidth: 260, marginTop: "-1px" }} />
                             </div>
                             <div style={selectFieldStyle}>
                                 <label> Sort by</label>
